@@ -48,6 +48,7 @@ if st.button("勝負！"):
         st.session_state.brain[user_move][ai_move] -= 0.2
         if st.session_state.brain[user_move][ai_move] < 0.1:
             st.session_state.brain[user_move][ai_move] = 0.1
+    st.write("もう一度、手を選んで「勝負！」を押してください！")
 
 # 可視化セクション
 st.divider()
