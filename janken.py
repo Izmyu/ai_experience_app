@@ -33,7 +33,7 @@ if st.button("勝負！"):
         # 勝敗を中央に大きく表示（緑色）
         st.markdown("<h1 style='text-align: center; color: #28a745;'>AIの勝ち！</h1>", unsafe_allow_html=True)
         
-        st.session_state.brain[user_move][ai_move] += 0.5 
+        st.session_state.brain[user_move][ai_move] += 0.2 
 
     elif ai_move == user_move:
         st.write(f"<p style='text-align: center;'>AIの手: <b>{ai_move}</b></p>", unsafe_allow_html=True)
