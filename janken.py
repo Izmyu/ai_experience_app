@@ -63,7 +63,7 @@ for i, (user_hand, actions) in enumerate(st.session_state.brain.items()):
         df = pd.DataFrame(list(actions.items()), columns=["AIの手", "重み"])
         st.bar_chart(df.set_index("AIの手"))
 
-st.write("## 学習方法についての解説")
+st.write("### 学習方法についての解説")
 st.write("""
     <div style='padding: 20px; border-radius: 10px;'>
         <p style='margin-bottom: 10px; text-indent: 1em;'>このゲームでは、プレイヤーとAIの手の組み合わせに、<b>勝敗に応じて重みを増減させる</b>ことによってAIが勝てる手を学習しています。</p>
