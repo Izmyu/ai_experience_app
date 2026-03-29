@@ -65,7 +65,7 @@ for i, (user_hand, actions) in enumerate(st.session_state.brain.items()):
 
 st.write("## 学習方法についての解説")
 st.write("""
-    <div style='background-color: #f0f2f6; padding: 20px; border-radius: 10px;'>
+    <div style='padding: 20px; border-radius: 10px;'>
         <p style='margin-bottom: 10px;'>このゲームでは、プレイヤーとAIの手の組み合わせに、<b>勝敗に応じて重みを増減させる</b>ことによってAIが勝てる手を学習しています。</p>
         <p style='margin-bottom: 10px;'>例えば、プレイヤーがグーのとき、AIがパーを出して勝った場合はその組み合わせの重みを<b>+3</b>、グーを出してあいこの場合は<b>-1</b>、チョキを出して負けた場合は<b>-2</b>というようなものです。</p>
         <p>重みが増減されることにより、手の出る確率が変化していきます（上の『対応表』）。イメージとしては、<b>円グラフ（ルーレット）の面積</b>を「重み」の比率で変え、回すというようなものです。</p>
