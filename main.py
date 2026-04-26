@@ -12,4 +12,4 @@ with col1:
 with col2:
     st.subheader("画像認識AI")
     if st.button("画像認識を体験する"):
-        st.switch_page("pages/neural_experience")
+        st.switch_page("pages/image.py")
