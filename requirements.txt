@@ -3,4 +3,6 @@ pandas
 streamlit-drawable-canvas
 opencv-python-headless
 numpy
-scipy
+scipy.special
+cv2
+torch
