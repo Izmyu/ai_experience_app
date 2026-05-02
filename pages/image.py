@@ -5,8 +5,8 @@ import streamlit as st
 canvas_result = st_canvas(
     fill_color="rgba(255, 165, 0, 0.3)",
     stroke_width=20,
-    stroke_color="#FFFFFF",
-    background_color="#000000",
+    stroke_color="#000000",
+    background_color="#FFFFFF",
     height=280,
     width=280,
     drawing_mode="freedraw",
