@@ -1,10 +1,9 @@
 streamlit
-pandas
 streamlit-drawable-canvas
-opencv-python-headless
 numpy
+pandas
 scipy
-torch
-treamlit
+opencv-python-headless
 matplotlib
+networkx
 Pillow
