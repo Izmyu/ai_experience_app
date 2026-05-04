@@ -19,12 +19,12 @@ def show_explanation():
         st.session_state.explanation_closed = True
         st.rerun()
 
-# 2. フラグの初期化
-if "explanation_closed" not in st.session_state:
-    st.session_state.explanation_closed = False
+# 初回訪問時のみ表示するためのフラグ管理
+if "first_visit" not in st.session_state:
+    st.session_state.first_visit = True
 
-# 3. フラグがFalse（閉じていない）ならダイアログを表示
-if not st.session_state.explanation_closed:
+if st.session_state.first_visit:
+    st.session_state.first_visit = False
     show_explanation()
 
 # スマホでも書きやすいキャンバスを設置
