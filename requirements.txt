@@ -5,3 +5,7 @@ opencv-python-headless
 numpy
 scipy
 torch
+treamlit
+matplotlib
+networkx
+Pillow
