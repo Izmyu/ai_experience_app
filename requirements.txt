@@ -6,6 +6,5 @@ numpy
 scipy
 torch
 treamlit
-matplotlib
 networkx
 Pillow
