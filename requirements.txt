@@ -7,3 +7,4 @@ opencv-python-headless
 matplotlib
 networkx
 Pillow
+torch
