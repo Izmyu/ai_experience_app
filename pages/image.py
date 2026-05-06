@@ -7,6 +7,10 @@ if "first_visit" not in st.session_state:
 # 解説ポップアップの定義
 @st.dialog("画像処理の操作方法")
 def show_explanation():
+
+    if st.button("理解しました！"):
+        st.session_state.first_visit = True
+        st.rerun()
     st.write("### 🎨 1, 4, 9のどれかを書いて予測！")
     st.image("https://thumb.ac-illust.com/d5/d54404572b4528dfc071e79b57413724_w.jpeg", caption="MNISTデータセットの例")
     
@@ -17,10 +21,6 @@ def show_explanation():
     4. **もう一度数字を書いて何回も繰り返そう！**:
     
     """)
-
-    if st.button("理解しました！"):
-        st.session_state.first_visit = True
-        st.rerun()
 
 
 if st.session_state.first_visit == False:
