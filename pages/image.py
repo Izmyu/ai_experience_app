@@ -8,7 +8,7 @@ if "first_visit" not in st.session_state:
 @st.dialog("画像処理の操作方法")
 def show_explanation():
 
-    if st.button("理解しました！"):
+    if st.button("理解しました！(こちらを押してください)"):
         st.session_state.first_visit = True
         st.rerun()
     st.write("### 🎨 1, 4, 9のどれかを書いて予測！")
