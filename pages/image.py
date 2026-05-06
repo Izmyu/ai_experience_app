@@ -1,5 +1,8 @@
 from streamlit_drawable_canvas import st_canvas
 import streamlit as st
+# 初回訪問時のみ表示するためのフラグ管理
+if "first_visit" not in st.session_state:
+    st.session_state.first_visit = False
 
 # 解説ポップアップの定義
 @st.dialog("画像処理の操作方法")
@@ -10,21 +13,17 @@ def show_explanation():
     st.markdown("""
     1. **1, 4, 9のどれかを書く！**: キャンバスに数字を描いて、AIに予測させましょう。
     2. **『この数字をAIに予測させる』をクリック！**: AIがあなたの描いた数字を予測します。
-    3. **自分の入力した数字を選択して『正解を学習させる』をクリック！**:だいたい10~20回くらい学習させると、AIの予測精度が上がってくる
+    3. **自分の入力した数字を選択して『正解を学習させる』をクリック！**:だいたい15~25回くらい学習させると、AIの予測精度が上がってくる
     4. **もう一度数字を書いて何回も繰り返そう！**:
     
     """)
 
     if st.button("理解しました！"):
-        st.session_state.explanation_closed = True
+        st.session_state.first_visit = True
         st.rerun()
 
-# 初回訪問時のみ表示するためのフラグ管理
-if "first_visit" not in st.session_state:
-    st.session_state.first_visit = True
 
-if st.session_state.first_visit:
-    st.session_state.first_visit = False
+if st.session_state.first_visit == False:
     show_explanation()
 
 # スマホでも書きやすいキャンバスを設置
