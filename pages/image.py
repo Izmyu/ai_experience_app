@@ -47,7 +47,8 @@ import torch
 import matplotlib.pyplot as plt
 import networkx as nx
 
-st.session_state.weights = [[], []]  # 初期重みをセッションステートに保存
+if 'weights' not in st.session_state:
+    st.session_state.weights = [[], []]  # 初期重みをセッションステートに保存
 
 def preprocess_image(image_data):
     # 1. RGBAからRGBへ変換し、さらにグレースケール（白黒）へ
@@ -248,6 +249,14 @@ if st.session_state.last_input is not None:
 )
         st.table(df)
 
+        # st.session_state.results.insert(0, (st.session_state.user_ans, st.session_state.output, "正解" if st.session_state.user_ans == st.session_state.output else "不正解", mean))
+        # cols = st.columns(3)
+        # # AIの予測結果を表形式で表示
+        # st.write("| あなたの入力 | AIの予測 | 結果 | 平均予測精度 |")
+        # st.write("| --- | --- | --- | --- |")
+        # for ans, pred, res, mean in st.session_state.results:
+        #     st.write(f"| {ans} | {pred} | {res} | {mean:.2f} |")
+
 def draw_nn(weights, layers):
     # 重みがまだ空（初期状態）の場合は描画しない
     if not isinstance(weights[0], np.ndarray):
@@ -285,7 +294,7 @@ def draw_nn(weights, layers):
                 # NumPy行列は (出力, 入力) の形なので weights[l][j, i] でアクセス
                 weight = weights[l][j, i]
                 
-                # 全ての線を引くと重いので、一定以上の強さの線だけ描画する工夫
+                # 全ての線を引くと重いので、一定以上の強さの線だけ描画する工夫（任意）
                 if abs(weight) > 0.01: 
                     width = abs(weight) * 2  # 太さ調整
                     color = '#000000' if weight > 0 else 'gray'
@@ -302,7 +311,60 @@ def draw_nn(weights, layers):
     nx.draw(G, pos, with_labels=False, node_size=50, node_color='skyblue', 
             edge_color=colors, width=widths, arrowsize=5, alpha=0.6)
     
+    # --- 出力層のノードにラベル(1, 4, 9)を付ける ---
+    # 全ノードのインデックスのうち、最後の layer_size 分が出力層
+    output_labels = ["1", "4", "9"]
+    output_layer_size = layers[-1]
+    
+    # 全ノード数から出力層の開始インデックスを計算
+    total_nodes = sum(layers)
+    start_idx = total_nodes - output_layer_size
+    
+    for i, label in enumerate(output_labels):
+        node_id = start_idx + i
+        x, y = pos[node_id]
+        # ノードの少し右側（x + 0.1）にテキストを表示
+        plt.text(x + 0.1, y, label, fontsize=14, fontweight='bold', 
+                 va='center', ha='left', color='blue')
+    
     st.pyplot(fig) # plt.show() ではなく st.pyplot() を使う
 layers = [196, 10, 3]
 
-draw_nn(st.session_state.weights, layers)
+st.divider()
+st.subheader("🤖 AIの頭の中をのぞく(ニューラルネットワーク)")
+if st.button("ネットワーク図を更新・表示"):
+    # session_stateに保存されている最新の重みを使って描画
+    draw_nn(st.session_state.weights, layers)
+
+with st.expander("📝 AIの仕組み解説"):
+    st.write("""<div style='padding: 20px; border-radius: 10px;'>
+    <p style='margin-bottom: 10px; text-indent: 1em;'>1. 画像を「数字の列」に変換する</p>
+        <ul>
+            <li>あなたがキャンバスに描いた絵は、そのままではAIには理解できません。</li>
+            <li>14×14の分割: キャンバスを縦横14マスの格子状（計196マス）に分割します。</li>
+            <li>数値化（画素値）: 色がついている部分を「0.99」、白い部分を「0.01」といった数値に変換します。</li>
+            <li>平坦化: この196個の数値を1列に並べることで、AIが受け取れる「データの列」が完成します。</li>
+        </ul>
+    <p style='margin-bottom: 10px; text-indent: 1em;'>2. 「重み」による計算と予測</p>
+        <ul>
+            <li>AIは、入力された196個の数値に「重み（Weight）」を掛け合わせて計算を行います。</li>
+            <li>重みとは: 「この場所に色があれば、数字の『4』っぽい」という、場所ごとの重要度（注目度）のことです。</li>
+            <li>最初はバラバラ: 学習を始める前、重みはランダムな値（デタラメな注目度）に設定されています。そのため、最初はAIの予測も当てずっぽうです。</li>
+            <li>可視化の秘密: ネットワーク図の黒い線はプラスの重み（正解への期待）、グレーの線はマイナスの重み（否定）を表しています。重みが大きいほど太い線になります。</li>
+        </ul>
+    <p style='margin-bottom: 10px; text-indent: 1em;'>3. 正解を教える「誤差逆伝播法（バックプロパゲーション）」</p>
+        <ul>
+             <li>AIが間違えたとき、正解を教えて「重み」を修正する仕組みを誤差逆伝播法と呼びます。</li>
+             <li>目標との比較: AIの出力と、あなたが選んだ「正解ラベル」を比較します。</li>
+             <li>理想の出力: 例えば、正解が「4」の場合、AIの出力が [0.01 (1の確率), 0.99 (4の確率), 0.01 (9の確率)] という理想的な形に近づくよう調整を行います。</li>
+             <li>修正の連鎖: 出力層で発生した「ズレ（誤差）」を、後ろから前（出力層→隠れ層→入力層）へと遡りながら、各ルートの重みを少しずつ書き換えていきます。</li>
+        </ul>
+    <p style='margin-bottom: 10px; text-indent: 1em;'>4. 学習の繰り返しと精度の向上</p>
+    <ul>
+        <li>何度も「正解」を教えて重みを更新することで、ネットワーク図の線（重み）は徐々に整理され、AIは数字の形を正しく捉えることができるようになっていきます。</li>
+    </ul>
+             <p style='margin-bottom: 8px; text-indent: 1em;'>ちなみに、この画像認証の技術は、現在の生成AIの画像認証の基盤にはなっているものの、2段階古い手法のようです。</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+
